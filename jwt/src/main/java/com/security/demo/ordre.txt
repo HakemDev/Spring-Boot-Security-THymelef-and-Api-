@@ -1,0 +1,72 @@
+1/SecurityConfig
+2/DemoApplication
+3/UserServiceImpl
+4/SecurityConfig
+5/create a package call filter
+6/CustomAuthenticationFilter
+7/SecurityConfig
+
+
+authentification: verify you are who you say you are -->Method: Login form ,http authentification,
+                  Custom auth. method
+authorization: Decide if you have acces to a resource ou non -->Method: Access Control URLs,
+               Access Control List(ACLs)
+-------------------------------------------------------------
+8/CustomAuthenticationFilter
+9/UserServiceImpl
+10/Postman: verify authentiticaion and se the information that an access or refresh token have
+   postman->add url:http://localhost:1213/login + Post->Chose x-www-form-urlencoded +add username and password
+   ->click send -> verify status 200 that's mean ok and copy the access token-> go to jwt.io->
+   pass the access_token in field text-> website will show you the information that the token has the same
+   thing for refresh-token
+11/CustomAuthenticationFilter
+12/SecurityConfig
+13/ now we are able to  give the user an access token and a refresh token when they log in successfully, so
+    what we have to do now is to be able to take this token from the user and give them access to the application.
+    so whenever the user give us this token as their authentication, then we should be able to verify this token and
+    then allow them into the application, after we verify that this token is valid, and to do this, we need to create
+    something called an authorization and this filter is going to intercept every request that comes into the application
+    and then look for that specific token and then process it and then determine if the user has access to certain
+    resources or not.so let's go ahead and create authorization token.it's some of the filters so i'm going to create it
+    in the same filter package.
+14/CustomAuthorizationFilter
+15/SecurityConfig
+15/ Refreshed_Token: the developer building the front end. it will take the access token and refresh token, save them somewhere
+    on the client. and then when i need to access any resource, i'm going to send the access token because that how i get access
+    to resources on that specific server or application, developers in the front end do whenever the access token expires,
+    they wait for the response to get something like a forbidden or something like that.
+    and then they look at the code or some specific message, and they determine that it's because they're token as expired.
+    so they look for the refresh token in the front end and then send another request immediately to get them an acces token.
+16/ UserResource
+17/SecurityConfig
+18/CustomAuthorizationFilter
+    -----------------------------JWT:---------------------------------------------------------
+
+        client gonna send some credentials to the app they are trying to acces
+                         and they are going to get a token
+ client-------- POST/login,username/password ---------------->Application
+
+         after verified the credentials are correct it's going to send additional web token
+         to client and that token is probably going to have information
+         and expiration day and a lot more information.it depend on the application
+ client <---------- JSON Web Token (JWT) -------------------- Application
+
+         so whenever the client needs to send a request to the same application, of course
+         we don't want them to authenticate again so they are going to have to send us that
+         token that we give them as log as it's valid.
+         so say you want to access the users resource, so they want to acces all the users
+         on the system or something,they are going to send some get request to  get all these
+         users and also send us the JWT token to the application.
+         and then the application is going to take the request, it's not going to process
+         the request yet it's going to check Json web token(JWT) to make sure the token is valid
+         and after it's also going to check to make sure the the token has permission
+         to access this resource.and when as a token owner of the token has access to the resource
+         that they are requesting
+ client(JWT)------------GET /users, JWT --------------------->Application
+
+ Refresh token: is a token giving to the user the actual access token is expires, they can say that
+                refresh and then you can give them a new one.
+                and this is to like smooth user experience so that you don't keep asking the user
+                login if the expiration date on the actual token.the access is not a long
+                period of time. so instead of asking the user login again, you say hey give me the
+                refresh token which you can give a longer expiration period.
